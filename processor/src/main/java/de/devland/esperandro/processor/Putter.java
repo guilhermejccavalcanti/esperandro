@@ -17,7 +17,6 @@
 package de.devland.esperandro.processor;
 
 import com.squareup.javawriter.JavaWriter;
-
 import javax.lang.model.element.Element;
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.VariableElement;
@@ -32,8 +31,7 @@ public class Putter {
 
     private Map<String, Element> preferenceKeys;
 
-    private Set<TypeKind> validPutterReturnTypes = new HashSet<TypeKind>(
-            Arrays.asList(TypeKind.VOID, TypeKind.BOOLEAN));
+    private Set<TypeKind> validPutterReturnTypes = new HashSet<TypeKind>(Arrays.asList(TypeKind.VOID, TypeKind.BOOLEAN));
 
     public Putter() {
         preferenceKeys = new HashMap<String, Element>();
@@ -44,8 +42,7 @@ public class Putter {
         List<? extends VariableElement> parameters = method.getParameters();
         TypeMirror returnType = method.getReturnType();
         TypeKind returnTypeKind = returnType.getKind();
-        if (parameters != null && parameters.size() == 1 && validPutterReturnTypes.contains(returnTypeKind) && PreferenceType
-                .toPreferenceType(parameters.get(0).asType()) != PreferenceType.NONE) {
+        if (parameters != null && parameters.size() == 1 && validPutterReturnTypes.contains(returnTypeKind) && PreferenceType.toPreferenceType(parameters.get(0).asType()) != PreferenceType.NONE) {
             isPutter = true;
         }
         return isPutter;
@@ -59,7 +56,6 @@ public class Putter {
                 isPutter = true;
             }
         }
-
         return isPutter;
     }
 
@@ -69,39 +65,30 @@ public class Putter {
         TypeMirror parameterType = method.getParameters().get(0).asType();
         PreferenceType preferenceType = PreferenceType.toPreferenceType(parameterType);
         TypeMirror returnType = method.getReturnType();
-
         createPutter(writer, valueName, valueName, preferenceType, returnType.toString());
     }
 
-    public void createPutterFromReflection(Method method, Element topLevelInterface,
-                                           JavaWriter writer) throws IOException {
+    public void createPutterFromReflection(Method method, Element topLevelInterface, JavaWriter writer) throws IOException {
         String valueName = method.getName();
         preferenceKeys.put(valueName, topLevelInterface);
         Type parameterType = method.getGenericParameterTypes()[0];
         PreferenceType preferenceType = PreferenceType.toPreferenceType(parameterType);
         Class<?> returnType = method.getReturnType();
-
         createPutter(writer, valueName, valueName, preferenceType, returnType.toString());
     }
 
-    private void createPutter(JavaWriter writer, String valueName, String value,
-                              PreferenceType preferenceType, String returnType) throws IOException {
+    private void createPutter(JavaWriter writer, String valueName, String value, PreferenceType preferenceType, String returnType) throws IOException {
         writer.emitAnnotation(Override.class);
-
         boolean shouldReturnValue = returnType.equalsIgnoreCase(Boolean.class.getSimpleName());
         String editorCommitStyle = "apply()";
         StringBuilder statementPattern = new StringBuilder("preferences.edit().put%s(\"%s\", %s).%s");
-
-        writer.beginMethod(returnType, valueName, EsperandroAnnotationProcessor.modPublic, preferenceType.getTypeName(),
-                valueName);
-
+        writer.beginMethod(returnType, valueName, EsperandroAnnotationProcessor.modPublic, preferenceType.getTypeName(), valueName);
         if (shouldReturnValue) {
             statementPattern.insert(0, "return ");
             editorCommitStyle = "commit()";
         }
-
         String methodSuffix = "";
-        switch (preferenceType) {
+        switch(preferenceType) {
             case INT:
                 methodSuffix = "Int";
                 break;
@@ -125,7 +112,6 @@ public class Putter {
                 value = String.format("Esperandro.getSerializer().serialize(%s)", valueName);
                 break;
         }
-
         String statement = String.format(statementPattern.toString(), methodSuffix, valueName, value, editorCommitStyle);
         writer.emitStatement(statement);
         writer.endMethod();
@@ -135,6 +121,4 @@ public class Putter {
     public Map<String, Element> getPreferenceKeys() {
         return preferenceKeys;
     }
-
-
 }

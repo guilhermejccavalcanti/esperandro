@@ -37,7 +37,6 @@ public class Warner {
     }
 
     public void emitMissingDefaultWarning(String type, Element element) {
-        processingEnv.getMessager().printMessage(Diagnostic.Kind.WARNING, "No overwritten default " + type + " value " +
-                "detected, please check the annotation.", element);
+        processingEnv.getMessager().printMessage(Diagnostic.Kind.WARNING, "No overwritten default " + type + " value " + "detected, please check the annotation.", element);
     }
 }

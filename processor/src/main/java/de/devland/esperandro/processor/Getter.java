@@ -18,7 +18,6 @@ package de.devland.esperandro.processor;
 
 import com.squareup.javawriter.JavaWriter;
 import de.devland.esperandro.annotations.Default;
-
 import javax.lang.model.element.Element;
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.VariableElement;
@@ -46,7 +45,6 @@ public class Getter {
         List<? extends VariableElement> parameters = method.getParameters();
         TypeMirror returnType = method.getReturnType();
         PreferenceType preferenceType = PreferenceType.toPreferenceType(returnType);
-
         if ((parameters == null || parameters.size() == 0) && preferenceType != PreferenceType.NONE) {
             isGetter = true;
         }
@@ -58,42 +56,33 @@ public class Getter {
         Class<?>[] parameters = method.getParameterTypes();
         Type returnType = method.getGenericReturnType();
         PreferenceType preferenceType = PreferenceType.toPreferenceType(returnType);
-
         if ((parameters == null || parameters.length == 0) && preferenceType != PreferenceType.NONE) {
             isGetter = true;
         }
-
         return isGetter;
     }
 
     public void createGetterFromModel(ExecutableElement method, JavaWriter writer) throws IOException {
         writer.emitAnnotation(Override.class);
+        writer.emitAnnotation(SuppressWarnings.class, new String[] { "\"unchecked\"" });
         String valueName = method.getSimpleName().toString();
         preferenceKeys.put(valueName, method);
-
         PreferenceType preferenceType = PreferenceType.toPreferenceType(method.getReturnType());
         Default defaultAnnotation = method.getAnnotation(Default.class);
-
         createGetter(defaultAnnotation, method, writer, valueName, preferenceType);
     }
 
-    public void createGetterFromReflection(Method method, Element topLevelInterface,
-                                           JavaWriter writer) throws IOException {
+    public void createGetterFromReflection(Method method, Element topLevelInterface, JavaWriter writer) throws IOException {
         writer.emitAnnotation(Override.class);
         String valueName = method.getName();
         preferenceKeys.put(valueName, topLevelInterface);
-
         PreferenceType preferenceType = PreferenceType.toPreferenceType(method.getGenericReturnType());
         Default defaultAnnotation = method.getAnnotation(Default.class);
-
         createGetter(defaultAnnotation, topLevelInterface, writer, valueName, preferenceType);
     }
 
-
-    private void createGetter(Default defaultAnnotation, Element element, JavaWriter writer, String valueName,
-                              PreferenceType preferenceType) throws IOException {
+    private void createGetter(Default defaultAnnotation, Element element, JavaWriter writer, String valueName, PreferenceType preferenceType) throws IOException {
         boolean hasDefaultAnnotation = defaultAnnotation != null;
-
         boolean allDefaults = false;
         if (hasDefaultAnnotation) {
             allDefaults = hasAllDefaults(defaultAnnotation);
@@ -101,22 +90,20 @@ public class Getter {
         String statementPattern = "preferences.get%s(\"%s\", %s)";
         String methodSuffix = "";
         String defaultValue = "";
-        switch (preferenceType) {
+        switch(preferenceType) {
             case INT:
                 methodSuffix = "Int";
                 if (hasDefaultAnnotation && !allDefaults && defaultAnnotation.ofInt() == Default.intDefault) {
                     warner.emitMissingDefaultWarning("int", element);
                 }
-                defaultValue = hasDefaultAnnotation ? String.valueOf(defaultAnnotation.ofInt()) : String.valueOf
-                        (Default.intDefault);
+                defaultValue = hasDefaultAnnotation ? String.valueOf(defaultAnnotation.ofInt()) : String.valueOf(Default.intDefault);
                 break;
             case LONG:
                 methodSuffix = "Long";
                 if (hasDefaultAnnotation && !allDefaults && defaultAnnotation.ofLong() == Default.longDefault) {
                     warner.emitMissingDefaultWarning("long", element);
                 }
-                defaultValue = hasDefaultAnnotation ? String.valueOf(defaultAnnotation.ofLong()) : String.valueOf
-                        (Default.longDefault);
+                defaultValue = hasDefaultAnnotation ? String.valueOf(defaultAnnotation.ofLong()) : String.valueOf(Default.longDefault);
                 defaultValue += "l";
                 break;
             case FLOAT:
@@ -124,8 +111,7 @@ public class Getter {
                 if (hasDefaultAnnotation && !allDefaults && defaultAnnotation.ofFloat() == Default.floatDefault) {
                     warner.emitMissingDefaultWarning("float", element);
                 }
-                defaultValue = hasDefaultAnnotation ? String.valueOf(defaultAnnotation.ofFloat()) : String.valueOf
-                        (Default.floatDefault);
+                defaultValue = hasDefaultAnnotation ? String.valueOf(defaultAnnotation.ofFloat()) : String.valueOf(Default.floatDefault);
                 defaultValue += "f";
                 break;
             case BOOLEAN:
@@ -133,17 +119,14 @@ public class Getter {
                 if (hasDefaultAnnotation && !allDefaults && defaultAnnotation.ofBoolean() == Default.booleanDefault) {
                     warner.emitMissingDefaultWarning("boolean", element);
                 }
-                defaultValue = hasDefaultAnnotation ? String.valueOf(defaultAnnotation.ofBoolean()) : String.valueOf
-                        (Default.booleanDefault);
+                defaultValue = hasDefaultAnnotation ? String.valueOf(defaultAnnotation.ofBoolean()) : String.valueOf(Default.booleanDefault);
                 break;
             case STRING:
-                if (hasDefaultAnnotation && !allDefaults && defaultAnnotation.ofString().equals(Default
-                        .stringDefault)) {
+                if (hasDefaultAnnotation && !allDefaults && defaultAnnotation.ofString().equals(Default.stringDefault)) {
                     warner.emitMissingDefaultWarning("String", element);
                 }
                 methodSuffix = "String";
-                defaultValue = (hasDefaultAnnotation ? ("\"" + defaultAnnotation.ofString() + "\"") : ("\"" + Default
-                        .stringDefault + "\""));
+                defaultValue = (hasDefaultAnnotation ? ("\"" + defaultAnnotation.ofString() + "\"") : ("\"" + Default.stringDefault + "\""));
                 break;
             case STRINGSET:
                 if (hasDefaultAnnotation) {
@@ -158,13 +141,10 @@ public class Getter {
                 }
                 methodSuffix = "String";
                 defaultValue = "null";
-                statementPattern = String.format("Esperandro.getSerializer().deserialize(%s, %s.class)",
-                        statementPattern, preferenceType.getTypeName().replaceFirst("<.*>", ""));
+                statementPattern = String.format("Esperandro.getSerializer().deserialize(%s, %s.class)", statementPattern, preferenceType.getTypeName().replaceFirst("<.*>", ""));
                 break;
         }
-
         writer.beginMethod(preferenceType.getTypeName(), valueName, EsperandroAnnotationProcessor.modPublic);
-
         String statement = String.format(statementPattern, methodSuffix, valueName, defaultValue);
         writer.emitStatement("return %s", statement);
         writer.endMethod();
@@ -175,18 +155,13 @@ public class Getter {
         return preferenceKeys;
     }
 
-
     private boolean hasAllDefaults(Default defaultAnnotation) {
         boolean hasAllDefaults = true;
-
         hasAllDefaults = defaultAnnotation.ofBoolean() == Default.booleanDefault;
         hasAllDefaults &= defaultAnnotation.ofInt() == Default.intDefault;
         hasAllDefaults &= defaultAnnotation.ofFloat() == Default.floatDefault;
         hasAllDefaults &= defaultAnnotation.ofLong() == Default.longDefault;
         hasAllDefaults &= defaultAnnotation.ofString().equals(Default.stringDefault);
-
         return hasAllDefaults;
     }
-
-
 }

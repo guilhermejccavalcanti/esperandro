@@ -23,6 +23,7 @@ import android.content.SharedPreferences;
  * underlying SharedPreference-instance directly.
  */
 public interface SharedPreferenceActions {
+
     /**
      * @return the underlying SharedPreference instance.
      */
@@ -64,5 +65,4 @@ public interface SharedPreferenceActions {
      */
     // TODO intelligent clear: only delete those values that are defined in the interface
     void clear();
-
 }

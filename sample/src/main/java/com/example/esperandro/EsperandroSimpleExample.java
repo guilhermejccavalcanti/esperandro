@@ -19,7 +19,6 @@ package com.example.esperandro;
 import de.devland.esperandro.SharedPreferenceMode;
 import de.devland.esperandro.annotations.Default;
 import de.devland.esperandro.annotations.SharedPreferences;
-
 import java.util.Set;
 
 @SharedPreferences(name = "simple", mode = SharedPreferenceMode.PRIVATE)
@@ -58,5 +57,4 @@ public interface EsperandroSimpleExample {
     String stringPrefWithBooleanPutter();
 
     boolean stringPrefWithBooleanPutter(String value);
-
 }

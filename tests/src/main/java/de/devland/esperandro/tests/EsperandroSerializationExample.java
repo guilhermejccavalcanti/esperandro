@@ -18,7 +18,6 @@ package de.devland.esperandro.tests;
 
 import de.devland.esperandro.annotations.SharedPreferences;
 import de.devland.esperandro.tests.model.Container;
-
 import java.util.ArrayList;
 
 @SharedPreferences

@@ -18,13 +18,11 @@ package de.devland.esperandro.serialization;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-
 import java.io.Serializable;
 
 public class GsonSerializer implements Serializer {
 
     private Gson gson = new GsonBuilder().create();
-
 
     @Override
     public String serialize(Serializable object) {

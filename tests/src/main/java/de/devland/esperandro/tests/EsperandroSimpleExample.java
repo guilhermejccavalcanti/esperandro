@@ -16,14 +16,14 @@
  */
 package de.devland.esperandro.tests;
 
+import de.devland.esperandro.SharedPreferenceActions;
 import de.devland.esperandro.SharedPreferenceMode;
 import de.devland.esperandro.annotations.Default;
 import de.devland.esperandro.annotations.SharedPreferences;
-
 import java.util.Set;
 
 @SharedPreferences(name = "simple", mode = SharedPreferenceMode.PRIVATE)
-public interface EsperandroSimpleExample {
+public interface EsperandroSimpleExample extends SharedPreferenceActions {
 
     @Default(ofInt = 42)
     int integerPref();

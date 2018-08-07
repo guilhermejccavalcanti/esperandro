@@ -21,7 +21,6 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-
 /**
  * Allows to set a default for the primitive preferences as well as {@code String}. A {@code Set<String>} will always
  * have {@code null} as default value;
@@ -34,9 +33,13 @@ import java.lang.annotation.Target;
 public @interface Default {
 
     public static final boolean booleanDefault = false;
+
     public static final int intDefault = -1;
+
     public static final long longDefault = -1l;
+
     public static final float floatDefault = -1.0f;
+
     public static final String stringDefault = "";
 
     boolean ofBoolean() default booleanDefault;

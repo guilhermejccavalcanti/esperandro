@@ -21,9 +21,9 @@ import javax.lang.model.type.TypeMirror;
 import java.lang.reflect.Type;
 
 public enum PreferenceType {
-    NONE(null, null), INT(TypeKind.INT), LONG(TypeKind.LONG), FLOAT(TypeKind.FLOAT), BOOLEAN(TypeKind.BOOLEAN),
-    STRING(TypeKind.DECLARED, "java.lang.String"), STRINGSET(TypeKind.DECLARED, "java.util.Set<java.lang.String>"),
-    OBJECT(TypeKind.DECLARED, null);
+
+    NONE(null, null), INT(TypeKind.INT), LONG(TypeKind.LONG), FLOAT(TypeKind.FLOAT), BOOLEAN(TypeKind.BOOLEAN), STRING(TypeKind.DECLARED, "java.lang.String"), STRINGSET(TypeKind.DECLARED, "java.util.Set<java.lang.String>"), OBJECT(TypeKind.DECLARED, null);
+
     private String declaredTypeName;
 
     PreferenceType(TypeKind typeKind) {
@@ -36,8 +36,7 @@ public enum PreferenceType {
 
     public static PreferenceType toPreferenceType(TypeMirror typeMirror) {
         PreferenceType type = NONE;
-
-        switch (typeMirror.getKind()) {
+        switch(typeMirror.getKind()) {
             case BOOLEAN:
                 type = BOOLEAN;
                 break;
@@ -58,17 +57,15 @@ public enum PreferenceType {
                 } else {
                     type = OBJECT;
                     type.declaredTypeName = typeMirror.toString();
-                    // TODO check for serializable interface
+                // TODO check for serializable interface
                 }
         }
-
         return type;
     }
 
     public static PreferenceType toPreferenceType(Type type) {
         String typeString = type.toString();
         PreferenceType preferenceType = NONE;
-
         if (typeString.equals("int")) {
             preferenceType = INT;
         } else if (typeString.equals("long")) {
@@ -90,7 +87,7 @@ public enum PreferenceType {
 
     public String getTypeName() {
         String typeName = declaredTypeName;
-        switch (this) {
+        switch(this) {
             case INT:
                 typeName = "int";
                 break;

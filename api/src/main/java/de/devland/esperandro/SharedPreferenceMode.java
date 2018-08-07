@@ -20,9 +20,9 @@ package de.devland.esperandro;
  * Values correspond to the respective android equivalent of Context.MODE_${SharedPreferenceMode}.
  */
 public enum SharedPreferenceMode {
-    PRIVATE("Context.MODE_PRIVATE"), WORLD_READABLE("Context.MODE_WORLD_READABLE"),
-    WORLD_WRITABLE("Context.MODE_WORLD_WRITEABLE"),
-    MULTI_PROCESS("Context.MODE_MULTI_PROCESS");
+
+    PRIVATE("Context.MODE_PRIVATE"), WORLD_READABLE("Context.MODE_WORLD_READABLE"), WORLD_WRITABLE("Context.MODE_WORLD_WRITEABLE"), MULTI_PROCESS("Context.MODE_MULTI_PROCESS");
+
     String androidSharedPreferenceMode;
 
     private SharedPreferenceMode(String androidMode) {

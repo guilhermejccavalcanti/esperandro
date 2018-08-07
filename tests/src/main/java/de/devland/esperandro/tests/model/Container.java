@@ -21,5 +21,6 @@ import java.io.Serializable;
 public class Container implements Serializable {
 
     public String value;
+
     public int anotherValue;
 }

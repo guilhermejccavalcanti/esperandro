@@ -19,7 +19,6 @@ package de.devland.esperandro;
 import android.content.Context;
 import android.util.Log;
 import de.devland.esperandro.serialization.Serializer;
-
 import java.lang.reflect.Constructor;
 import java.util.HashMap;
 import java.util.Map;
@@ -28,6 +27,7 @@ import java.util.Map;
  * Manager to give access to the generated Esperandro-SharedPreference implementations.
  */
 public class Esperandro {
+
     private static Esperandro instance;
 
     private static final String SUFFIX = "$$Impl";
@@ -62,7 +62,6 @@ public class Esperandro {
     @SuppressWarnings("unchecked")
     public static <T> T getPreferences(Class<T> preferenceClass, Context context) {
         Esperandro esperandro = Esperandro.getInstance();
-
         T implementation = (T) esperandro.preferenceInstances.get(preferenceClass.getName());
         if (implementation == null) {
             implementation = esperandro.createInstance(preferenceClass, context);
@@ -75,14 +74,11 @@ public class Esperandro {
     private <T> T createInstance(Class<T> preferenceClass, Context context) {
         T implementation;
         try {
-            Class<? extends T> implementationClass = (Class<? extends T>) Class.forName(preferenceClass
-                    .getCanonicalName() + SUFFIX);
+            Class<? extends T> implementationClass = (Class<? extends T>) Class.forName(preferenceClass.getCanonicalName() + SUFFIX);
             Constructor<? extends T> constructor = implementationClass.getConstructor(Context.class);
             implementation = constructor.newInstance(context);
-
         } catch (Exception e) {
-            throw new RuntimeException("Couldn't load generated class. Please check esperandro processor " +
-                    "configuration in your project.", e);
+            throw new RuntimeException("Couldn't load generated class. Please check esperandro processor " + "configuration in your project.", e);
         }
         return implementation;
     }
@@ -96,9 +92,7 @@ public class Esperandro {
         if (esperandro.serializer == null) {
             esperandro.serializer = getDefaultSerializer();
             if (esperandro.serializer == null) {
-                throw new IllegalStateException("Tried to save a serialized Object into preferences but no serializer" +
-                        " is " +
-                        "" + "present");
+                throw new IllegalStateException("Tried to save a serialized Object into preferences but no serializer" + " is " + "" + "present");
             }
         }
         return esperandro.serializer;
@@ -108,14 +102,11 @@ public class Esperandro {
     private static Serializer getDefaultSerializer() {
         Serializer defaultSerializer = null;
         try {
-            Class<? extends Serializer> defaultSerializerClass = (Class<? extends Serializer>) Class.forName("de" + "" +
-                    ".devland.esperandro.serialization.GsonSerializer");
+            Class<? extends Serializer> defaultSerializerClass = (Class<? extends Serializer>) Class.forName("de" + "" + ".devland.esperandro.serialization.GsonSerializer");
             defaultSerializer = defaultSerializerClass.newInstance();
         } catch (Exception e) {
             Log.w(TAG, "Default Serializer (GsonSerializer) not present.");
         }
-
         return defaultSerializer;
     }
-
 }

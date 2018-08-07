@@ -18,7 +18,6 @@ package com.example.esperandro;
 
 import com.example.esperandro.model.Container;
 import de.devland.esperandro.annotations.SharedPreferences;
-
 import java.util.ArrayList;
 
 @SharedPreferences
@@ -35,5 +34,4 @@ public interface EsperandroSerializationExample {
     boolean containerValueSync(Container container);
 
     Container containerValueSync();
-
 }
